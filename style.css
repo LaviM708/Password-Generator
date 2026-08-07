@@ -229,7 +229,7 @@ button:active {
 
 .strength-bar {
   height: 100%;
-  width: 0;
+  width: 33%;
   min-width: 5%;
   background-color: var(--weak-color);
   transition: all 0.3s ease;
