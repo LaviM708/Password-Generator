@@ -32,6 +32,8 @@ lengthSlider.addEventListener("input", () => {
 
 generateButton.addEventListener("click", generatePassword);
 
+window.addEventListener("DOMContentLoaded", generatePassword);
+
 function generatePassword() {
   // 1. Get the selected password length
   const passwordLength = Number(lengthSlider.value);
@@ -54,13 +56,7 @@ function generatePassword() {
   passwordInput.value = password;
 
   // 6. Update the password strength
-  updateStrengthMeter(
-    passwordLength,
-    uppercaseCheckbox.checked,
-    lowercaseCheckbox.checked,
-    numbersCheckbox.checked,
-    symbolsCheckbox.checked,
-  );
+  updateStrengthMeter(password);
 }
 
 function createRandomPassword(length, characters) {
@@ -95,52 +91,73 @@ function getAllowedCharacters() {
   return characters;
 }
 
-function updateStrengthMeter(
-  passwordLength,
-  hasUppercase,
-  hasLowercase,
-  hasNumbers,
-  hasSymbols,
-) {
+function updateStrengthMeter(password) {
+  const passwordLength = password.length;
+
+  const hasUppercase = /[A-Z]/.test(password);
+  const hasLowercase = /[a-z]/.test(password);
+  const hasNumbers = /[0-9]/.test(password);
+  const hasSymbols = /[!@#$%^&*()\-_=+\[\]{}|;:,.<>?/]/.test(password);
+
   let strengthScore = 0;
 
-  if (passwordLength >= 8) {
-    strengthScore++;
-  }
-
-  if (passwordLength >= 12) {
-    strengthScore++;
-  }
+  strengthScore += Math.min(passwordLength * 2, 40);
 
   if (hasUppercase) {
-    strengthScore++;
+    strengthScore += 15;
   }
 
   if (hasLowercase) {
-    strengthScore++;
+    strengthScore += 15;
   }
 
   if (hasNumbers) {
-    strengthScore++;
+    strengthScore += 15;
   }
 
   if (hasSymbols) {
-    strengthScore++;
+    strengthScore += 15;
   }
 
+  if (passwordLength < 8) {
+    strengthScore = Math.min(strengthScore, 40);
+  }
+
+  const safeScore = Math.max(5, Math.min(100, strengthScore));
+  strengthBar.style.width = safeScore + "%";
   console.log(`Strength score ${strengthScore}`);
 
-  if (strengthScore <= 2) {
+  if (strengthScore < 40) {
     strengthLabel.textContent = "Weak";
-    strengthBar.style.width = "33%";
     strengthBar.style.backgroundColor = "var(--weak-color)";
-  } else if (strengthScore <= 4) {
+  } else if (strengthScore <= 70) {
     strengthLabel.textContent = "Medium";
-    strengthBar.style.width = "66%";
     strengthBar.style.backgroundColor = "var(--medium-color)";
   } else {
     strengthLabel.textContent = "Strong";
-    strengthBar.style.width = "100%";
     strengthBar.style.backgroundColor = "var(--strong-color)";
   }
+}
+
+copyButton.addEventListener("click", () => {
+  if (!passwordInput.value) return;
+
+  navigator.clipboard
+    .writeText(passwordInput.value)
+    .then(() => {
+      showCopySuccess();
+    })
+    .catch((error) => {
+      console.log("Could not copy:", error);
+    });
+});
+
+function showCopySuccess() {
+  copyButton.classList.remove("far", "fa-copy");
+  copyButton.classList.add("fas", "fa-check");
+
+  setTimeout(() => {
+    copyButton.classList.remove("fas", "fa-check");
+    copyButton.classList.add("far", "fa-copy");
+  }, 1500);
 }

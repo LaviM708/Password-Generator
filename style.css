@@ -102,7 +102,7 @@ h1::after {
 }
 
 #copy-btn:hover {
-  color: var(--primary-color);
+  color: #333;
 }
 
 .options {
