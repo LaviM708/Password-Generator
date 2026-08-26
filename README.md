@@ -2,6 +2,10 @@
 
 A customizable password generator built with JavaScript.
 
+## Live Demo
+
+Try the app here: https://lavim708.github.io/Password-Generator/
+
 ## Preview
 
 ![Password Generator Preview](assets/password-generator-preview.png)
