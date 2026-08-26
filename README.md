@@ -2,6 +2,10 @@
 
 A customizable password generator built with JavaScript.
 
+## Preview
+
+![Password Generator Preview](assets/password-generator-preview.png)
+
 ## Features
 
 - Generate random passwords
